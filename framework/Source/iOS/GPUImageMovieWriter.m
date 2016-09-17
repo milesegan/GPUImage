@@ -699,7 +699,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     if (!isRecording || _paused)
     {
-        [firstInputFramebuffer unlock];
+        if (!self.skipFrameBufferLifetimeManagement) {
+            [firstInputFramebuffer unlock];
+        }
         return;
     }
 
@@ -730,7 +732,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     // Also, if two consecutive times with the same value are added to the movie, it aborts recording, so I bail on that case
     if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) || (CMTIME_IS_INDEFINITE(frameTime)) ) 
     {
-        [firstInputFramebuffer unlock];
+        if (!self.skipFrameBufferLifetimeManagement) {
+            [firstInputFramebuffer unlock];
+        }
         return;
     }
 
@@ -818,7 +822,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         
         write();
         
-        [inputFramebufferForBlock unlock];
+        if (!self.skipFrameBufferLifetimeManagement) {
+            [inputFramebufferForBlock unlock];
+        }
     });
 }
 
